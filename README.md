@@ -1,34 +1,14 @@
 # some-project
 
-some project that I want to put my code on github.
+大学生涯中写过的一些个人觉得不错的小项目，push 到 github 上，作为留念😁
 
-## amazing-e-commerce
+----------
 
-这是一个基于spring MVC + Vue的simple前后端分离web项目，电子商务，做到实现商品的展示、购买等功能。
-后期会继续更新，使得项目功能更丰富。
+- ## [amazing-e-commerce](amazing-e-commerce/README.md)
 
-## 用到的技术栈
+这是一个基于 Spring MVC + Vue 的simple前后端分离web项目，电子商务，做到实现商品的展示、购买等功能。
+后期会继续更新，使得项目功能更丰富。[2019/12]
 
-### 前台
+- ## [videos-recommender](videos-recommender/README.md)
 
-- axios: Axios 是一个基于 promise 的 HTTP 库，方便的用来实现ajax.
-- Bootstrap: 简洁、直观、强悍的前端开发框架，让web开发更迅速、简单
-- VUE: 近几年最受人瞩目的前端框架，渐进式的Java Script开发框架
-
-### 后台
-
-- Spring：Java世界流行的框架，基于Ioc、AOP思想，使得开发快速、高效。
-- Spring MVC：基于Spring 的 MVC框架
-- Hibernate：全球流行的Java ORM框架，国外使用率第一。
-- Jackson: 流行且久经考验的Java JSON数据处理框架
-- Lombok: Java包，通过注解的方式，使开发者高效的开发Java对象
-
-### 如何运行
-
-clone源码到本地
-
-1. 使用maven打包成war文件，放入tomcat的webapps目录运行；
-
-2. 或者使用Jetty的maven插件，运行命令mvn jetty:run来运行。
-
-注意 *请更改初始化你的MySQL数据库*
+一个简单的基于 Mahout库 的电影推荐系统，使用了 Redis 作为缓存，Vert.X 构建 web 服务以提供 RESTful 服务。[2019/12]
