@@ -1,6 +1,6 @@
 # videos-recommender
 
-一个简单的基于 Mahout库 的电影推荐系统，使用了 Redis 作为缓存，Vert.X 构建 web 服务以提供 RESTful 服务。[2019/12]
+一个简单的基于 Mahout 库的电影推荐系统，使用了 Redis 作为缓存，Vert.X 构建 web 服务以提供 RESTful 服务。[2019/12]
 
 ## 说明
 
