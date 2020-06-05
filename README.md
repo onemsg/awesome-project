@@ -12,3 +12,9 @@
 - ## [videos-recommender](videos-recommender/README.md)
 
 一个简单的基于 Mahout库 的电影推荐系统，使用了 Redis 作为缓存，Vert.X 构建 web 服务以提供 RESTful 服务。[2019/12]
+
+- ## [simple-shorturl-service](simple-shorturl-service/README.md)
+
+一个简单的短网址服务系统，可通过 RESTful API 来生成新短网址，短网址与原网址的映射存储在 Redis 数据库中，用户请求短网址时会被重定向到原网址。后台使用 [Vert.X-Web](https://vertx.io/docs/vertx-web/java/) 和异步编程，web服务和redis服务之间通过 EventBus 通信。短网址生成使用原网址到62进制映射的方案。[2020/05]
+
+- upcoming updates...
