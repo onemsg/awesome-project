@@ -2,6 +2,7 @@ package com.onemsg.shorturl.verticle;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.onemsg.shorturl.common.Convertor;
 
@@ -40,8 +41,10 @@ public class RedisVerticle extends AbstractVerticle {
 
         createRedisClient(onCreate -> {
             if (onCreate.succeeded()) {
-                System.out.println("Redis 连接成功！");
+                logger.info("Redis 连接成功！");
                 redis = RedisAPI.api(client);
+            }else if(onCreate.failed()) {
+                logger.error("Redis 连接失败！");
             }
         });
 
@@ -66,6 +69,9 @@ public class RedisVerticle extends AbstractVerticle {
     }
 
     private void attemptReconnect(int retry) {
+
+        logger.info("第" + retry + "次尝试重连 Redis");
+
         if (retry > MAX_RECONNECT_RETRIES) {
             // we should stop now, as there's nothing we can do.
         } else {
@@ -139,6 +145,9 @@ public class RedisVerticle extends AbstractVerticle {
 
                     if(res.result().type() == ResponseType.MULTI){
                         
+                        AtomicInteger hasGetCount = new AtomicInteger();
+                        final int size = res.result().size();
+
                         for(Response r : res.result()){
                             
                             redis.hgetall(r.toString(), res2 -> {
@@ -148,13 +157,15 @@ public class RedisVerticle extends AbstractVerticle {
                                     .put(data.get(0).toString(), data.get(1).toString())
                                     .put(data.get(2).toString(), data.get(3).toString());
                             
-                                logger.info(json.toString());
+                                // logger.info(json.toString());
                                 array.add(json);
+                                
+                                if( hasGetCount.incrementAndGet() == size ){
+                                    msg.reply(array);
+                                    logger.info("list 请求 redis 已回复");
+                                }
                             });
                         }
-
-                        msg.reply(array);
-                        logger.info("list 请求已回复");
                     }
                 }
             } );

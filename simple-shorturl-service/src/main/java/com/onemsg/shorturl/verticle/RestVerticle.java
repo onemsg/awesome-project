@@ -10,10 +10,12 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 
 public class RestVerticle extends AbstractVerticle {
 
     Logger logger = LoggerFactory.getLogger(RestVerticle.class);
+    java.util.logging.Logger log = null;
 
     @Override
     public void start() throws Exception {
@@ -21,12 +23,28 @@ public class RestVerticle extends AbstractVerticle {
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
 
+        router.get("/management").handler(routingContext -> {
+            routingContext.reroute("/static/management.html");
+        });
+
+        router.get("/favicon.ico").handler(routingContext -> {
+            routingContext.reroute("/static/favicon.ico");
+        });
+
         router.get("/:shortUrlKey").handler(this::handleRedirect);
         router.get("/api/list").handler(this::handleListShortUrl);
         router.post("/api/create").handler(this::handleCreateShortUrl);
+        router.get("/static/*").handler(StaticHandler.create());
+ 
 
-        vertx.createHttpServer().requestHandler(router).listen(8080);
-        logger.info("REST web 服务器启动成功！监听端口 8080");
+        vertx.createHttpServer().requestHandler(router).listen(8081, "localhost", result -> {
+            if (result.succeeded()) {
+                logger.info("WEB 服务器启动成功！port: " + result.result().actualPort());
+            } else {
+                logger.error("WEB 服务器启动失败！case: " + result.cause().getMessage());
+            }
+        });
+
     }
 
     private void handleCreateShortUrl(RoutingContext context) {
@@ -36,7 +54,6 @@ public class RestVerticle extends AbstractVerticle {
         bus.<JsonObject>request(RedisVerticle.SHORTURL_CREATE_ADDRESS, json, reply -> {
             if( reply.succeeded() ){
                 JsonObject data = reply.result().body();
-                data.put("shortUrl", context.request().host() + "/" + data.getString("shortUrl") );
                 context.response().putHeader("content-type", "application/json").end(data.toString());
             }
         });

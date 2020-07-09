@@ -12,7 +12,7 @@ public class Server {
     public static void main(String[] args) {
         
         Vertx vertx = Vertx.vertx();
-        vertx.deployVerticle(RestVerticle.class, new DeploymentOptions().setInstances(4));
-        vertx.deployVerticle(RedisVerticle.class, new DeploymentOptions().setWorker(true).setInstances(16));
+        vertx.deployVerticle(RestVerticle.class, new DeploymentOptions().setInstances(2));
+        vertx.deployVerticle(RedisVerticle.class, new DeploymentOptions().setWorker(true).setInstances(4));
     }
 }

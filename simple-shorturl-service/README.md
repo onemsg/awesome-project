@@ -6,7 +6,15 @@
 
 短网址服务原理可参考 [短网址(short URL)系统的原理及其实现 | 思否](https://segmentfault.com/a/1190000012088345)
 
-## RESTful API 说明
+![管理中心](screenshot/01.png)
+
+![管理中心-创建新短域名](screenshot/02.png)
+
+## Web 路由说明
+
+- **`GET /:shortUrlKey`** | 通过短网址，重定向到原网址
+
+- **`GET /management`** | 管理中心，查看所有短网址映射和创建新短网址
 
 - **`POST /api/create {'srcUrl': 'source url'}`** | 返回提交原网址的 短网址
 
@@ -20,15 +28,17 @@
 [ {"shortUrl": "short url", "srcUrl": "source url", "date": "create date" } ]
 ```
 
-- **`GET /:shortUrlKey`** | 通过短网址，重定向到原网址
-
-## 类/包简要说明
+## 类/文件简要说明
 
 - `shorturl.common.Convertor` 是一个工具类，主要用来把十进制整数转62进制，和把一个字符串转62进制。
 
 - `shorturl.verticle` 包中都是各个 `verticle`。 `RedisVerticle` 用来创建和管理 Redis 数据库，以及通过事件机制（异步）相应 Redis 的读写请求；`RestVerticle` 用来创建 web 服务，提供 RESTful API 管理接口和短域名的路由重定向，它会异步请求读写 Redis。
 
 - `short.Server` 部署和运行 Vert.X 服务。
+
+- `webroot\management.html` 基于 Vue 和 Bulma 构建的前端管理界面，用来查看已创建的 shorturl 和 创建新 shorturl。
+
+- `auto.py` 自己编写的 python 自动化程序，自动完成 maven 打包 -> jar 部署服务器 -> 重启 jar 应用。
 
 ## 其他说明
 
@@ -44,6 +54,10 @@
 
 首先确保 Redis 数据库已启动，JDK version 11或以上
 
-- IDE 直接运行 `short.Server` 的 main 方法；
+1. IDE 直接运行 `short.Server` 的 main 方法；
 
-- 生成 jar 包，运行 `java -jar short-url-**.jar short.Server`。
+2. 或生成 jar 包，运行 `java -jar short-url-**.jar`；
+
+3. 访问 `http://localhost:8081/management` 进入管理中心界面；
+
+4. 访问路径 `host/:short-url-key` 测试短域名服务
