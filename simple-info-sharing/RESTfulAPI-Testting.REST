@@ -1,0 +1,27 @@
+GET http://localhost:8080/api/urlmap/list
+
+###
+DELETE http://localhost:8080/api/urlmap/name/python-spark-sql
+
+###
+POST http://localhost:8080/api/urlmap/put
+Content-Type: : application/json
+
+{
+    "name": "python-spark-SQL",
+    "filename": "Python数据科学速查表 - Spark SQL 基础.pdf"
+}
+
+###
+GET http://localhost:8080/api/file/list
+
+###
+POST http://localhost:8080/api/file/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="Python数据科学速查表 - Jupyter Notebook.pdf"
+Content-Type: .pdf
+
+< C:\Users\onemsg\Desktop\Python知识图谱\Python数据科学速查表 - Jupyter Notebook.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

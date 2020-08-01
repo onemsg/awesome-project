@@ -17,8 +17,12 @@
 
 一个简单的短网址服务系统，可通过 RESTful API 来生成新短网址，短网址与原网址的映射存储在 Redis 数据库中，用户请求短网址时会被重定向到原网址。后台使用 [Vert.X-Web](https://vertx.io/docs/vertx-web/java/) 和异步编程，web服务和redis服务之间通过 EventBus 通信。短网址生成使用原网址到62进制映射的方案。[2020/05] 新添加了管理界面。[2020/07]
 
-- ## [COVID-19-REALTIME-INFO-VISUALIZATION](COVID-19-REALTIME-INFO-VISUALIZATION/README.MD)
+- ## [covid-19-realtime-info-visualization](COVID-19-REALTIME-INFO-VISUALIZATION/README.MD)
 
 一个展示 COVID-19 全球实时趋势的 web 应用，基于 Vue/Bulma/Echarts 和 Flask 构建。[2020/06]
+
+- ## [simple-info-sharing](simple-info-sharing)
+
+这是一个简单的信息共享平台，信息具体地指其实是 html、pdf 这些能直接被浏览器解析的文件，信息上传到平台后，其他人可以直接查看/浏览。[2020/07]
 
 - upcoming updates...

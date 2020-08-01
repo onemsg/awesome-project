@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Language" content="zh-CN">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharing 主页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <link rel="shortcut icon" href="static/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="tabs is-boxed is-centered is-large">
+        <ul>
+            <li>
+                <a href="/" class="is-size-4">
+                    <span class="icon"><i class="fas fa-home" aria-hidden="true"></i></span>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li class="is-active">
+                <a href="manage" class="is-size-4">
+                    <span class="icon"><i class="fas fa-cogs" aria-hidden="true"></i></span>
+                    <span>管理</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 内容 -->
+    <section class="section">
+
+        <div class="container has-text-centered has-text-primary">
+            <div class="heading">
+                <h1 class="title">
+                    <span class="icon">
+                        <i class="fas fa-list"></i>
+                    </span>
+                    内容列表
+                </h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <table id="content-list-table" class="table is-striped is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>文件名</th>
+                        <th>短名</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="(item,index) in contentList">
+                        <tr>
+                            <th>{{ index + 1 }}</th>
+                            <td>
+                                <span class="icon">
+                                    <i :class="[ iconClass(item.filename) ]"></i>
+                                </span>
+                                <a :href="item.url" class="has-text-dark">{{ item.filename }}</a>
+                            </td>
+                            <td>
+                                <a :href="item.nameurl" class="has-text-grey-dark" target="_blank">{{ item.name }}</a>
+                            </td>
+                        </tr>
+                    </template>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section">
+
+        <div class="container has-text-centered has-text-primary">
+            <div class="heading">
+                <h1 class="title">
+                    <span class="icon">
+                        <i class="fas fa-arrow-circle-up"></i>
+                    </span>
+                    上传文件
+                </h1>
+            </div>
+        </div>
+
+        <br>
+
+        <div id="file-upload" class="container">
+
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-size-6">
+
+                    <div class="file has-name is-fullwidth has-addons">
+                        <label class="file-label">
+                            <input id="file-input" class="file-input" type="file" name="uploadfile"
+                                accept=".pdf,.html,.zip, image/*" @change="handleFiles">
+
+                            <span class="file-cta">
+                                <span class="file-icon">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="file-label">
+                                    选择上传文件/内容
+                                </span>
+                            </span>
+
+                            <span id='file-name' class="file-name">
+                                {{ filename }}
+                            </span>
+                        </label>
+
+
+                        <p class="control">
+                            <button class="button is-dark" @click="uploadFiles">
+                                上传
+                            </button>
+                        </p>
+
+                    </div>
+
+                </div>
+                <div class="column"></div>
+            </div>
+
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-size=6">
+                    <article class="message is-success" :class="{'is-hidden': !showMessage}">
+                        <div class="message-header">
+                            <p>Success</p>
+                            <button class="delete" aria-label="delete" @click="showMessage = false"></button>
+                        </div>
+                        <div class="message-body">
+                            <span v-html="message"></span>
+                        </div>
+                    </article>
+                </div>
+                <div class="column"></div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section">
+
+        <div class="container has-text-centered has-text-primary">
+            <div class="heading">
+                <h1 class="title">
+                    <span class="icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </span>
+                    添加新短名
+                </h1>
+            </div>
+        </div>
+
+        <br>
+
+        <div id="urlmap-put" class="container">
+
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-size-6">
+                    <div class="field has-addons">
+                        <p class="control">
+                            <a class="button is-static">
+                                文件名
+                            </a>
+                        </p>
+                        <div class="control  is-expanded">
+                            <input class="input" type="text" name="filename" v-model="filename"
+                                placeholder="e.g.Python数据科学速查表 - Spark SQL 基础.pdf">
+                        </div>
+                    </div>
+
+                    <div class="field has-addons">
+                        <p class="control">
+                            <a class="button is-static">
+                                &ensp;短名&ensp;
+                            </a>
+                        </p>
+                        <div class="control  is-expanded">
+                            <input class="input" type="email" name="name" v-model="name"
+                                placeholder="e.g.python-spark-sql">
+                        </div>
+                    </div>
+
+                    <!-- <div class="field is-grouped is-grouped-centered"> -->
+                    <p class="control">
+                        <button class="button is-dark is-fullwidth" @click="addUrlMap">
+                            提交
+                        </button>
+                    </p>
+                    <!-- </div> -->
+                </div>
+                <div class="column"></div>
+
+            </div>
+
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-size-6">
+                    <article class="message is-success" :class="{'is-hidden': !showMessage}">
+                        <div class="message-header">
+                            <p>Success</p>
+                            <button class="delete" aria-label="delete" @click="showMessage = false"></button>
+                        </div>
+                        <div class="message-body">
+                            <span v-html="message"></span>
+                        </div>
+                    </article>
+                </div>
+                <div class="column"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+
+        <div class="container has-text-centered has-text-primary">
+            <div class="heading">
+                <h1 class="title">
+                    <span class="icon">
+                        <i class="fas fa-trash-alt"></i>
+                    </span>
+                    移除短名
+                </h1>
+            </div>
+        </div>
+
+        <br>
+
+        <div id="urlmap-del" class="container">
+
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-size-6">
+
+                    <div class="field has-addons">
+                        <p class="control">
+                            <a class="button is-static">
+                                &ensp;短名&ensp;
+                            </a>
+                        </p>
+                        <div class="control  is-expanded">
+                            <input class="input" type="email" name="name" v-model="name"
+                                placeholder="e.g.python-spark-sql">
+                        </div>
+                        <div class="control" @click="delUrlMap">
+                            <a class="button is-dark">
+                                移除
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="column"></div>
+            </div>
+
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-size=6">
+                    <article class="message is-success" :class="{'is-hidden': !showMessage}">
+                        <div class="message-header">
+                            <p>Success</p>
+                            <button class="delete" aria-label="delete" @click="showMessage = false"></button>
+                        </div>
+                        <div class="message-body">
+                            <span v-html="message"></span>
+                        </div>
+                    </article>
+                </div>
+                <div class="column"></div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Sharing</strong>: 一个简单的信息共享平台.<br>
+                Written by <strong><a href="mailto:kvimsg@live.com">onemsg</a></strong>.<br>
+                Build By <strong>Vert.X & Vue & Bumla</strong>.
+            </p>
+        </div>
+    </footer>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css"
+        integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous" />
+
+
+    <script src='static/main.js'></script>
+    <script>
+        initManage()
+    </script>
+</body>
+
+</html>
