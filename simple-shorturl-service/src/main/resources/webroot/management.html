@@ -7,26 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
-
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0/axios.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet">
     <title>Short Url Management</title>
 
     <style>
         table {
             table-layout: fixed;
         }
+
         td {
             word-break: break-all;
         }
+
+        .only-read {
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+        }
+
     </style>
 </head>
 
 <body>
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-dark only-read" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <a class="navbar-item title">
+            <a class="navbar-item title ">
                 <p>SIMPLE-SHORTURL-SERVICE</p>
             </a>
         </div>
@@ -34,7 +41,7 @@
         <div id="id-navbar" class="navbar-menu">
             <div class="navbar-start">
                 <a class="navbar-item is-active">
-                    <strong>Management</strong>
+                    <strong class="is-size-5">Management</strong>
                 </a>
             </div>
         </div>
@@ -42,25 +49,88 @@
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
-                    <a class="button is-dark" target="_blank"
+                    <a class="button is-dark" target="_blank" rel="noopener noreferrer"
                         href="https://github.com/onemsg/some-project/tree/master/simple-shorturl-service">
-                        <ion-icon name="logo-github" size="large"></ion-icon>
-                        <strong>GitHub</strong>
+                        <span class="icon is-medium">
+                            <i class="fab fa-github fa-lg"></i>
+                        </span>
+                        <strong class="is-size-5">GitHub</strong>
                     </a>
                 </div>
             </div>
         </div>
     </nav>
 
+
+    <!-- 添加新短域名 -->
+    <section class="section">
+
+        <div class="container has-text-centered has-text-primary">
+            <div class="heading">
+                <h1 class="title only-read">
+                    <i class="fas fa-plus-square"></i>
+                    CREATE SHORTURL MAP
+                </h1>
+            </div>
+        </div>
+
+        <br>
+
+        <div id="shorturl-add" class="container" style="height: 176px;">
+
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-8">
+
+                    <div class="field has-addons">
+                        <p class="control">
+                            <a class="button is-static">
+                                &ensp;SOURCE URL&ensp;
+                            </a>
+                        </p>
+                        <div class="control  is-expanded">
+                            <input class="input" type="url" name="srcUrl" v-model="srcUrl">
+                        </div>
+                        <div class="control" @click="addShortUrl">
+                            <a class="button is-dark has-text-weight-semibold">
+                                CREATE
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="columns has-text-centered">
+                        <div class="column"></div>
+                        <div class="column is-10">
+                            <section class="hero">
+                                <div class="hero-body">
+                                    <div class="container">
+                                        <h1 class="title has-text-black is-3">
+                                            {{ result.shortUrl }}
+                                        </h1>
+                                        <h2 class="subtitle is-5 has-text-grey only-read">
+                                            {{ formatDate(result.date) }}
+                                        </h2>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="column"></div>
+                    </div>
+
+                </div>
+                <div class="column"></div>
+            </div>
+
+        </div>
+    </section>
+
     <!-- 所有 url map -->
     <section class="section">
 
         <div class="container has-text-centered has-text-primary">
             <div class="heading">
-                <h1 class="title">
-                    <!-- <span class="icon">
-                        <i class="fas fa-list"></i>
-                    </span> -->
+                <h1 class="title only-read">
+                    <i class="fas fa-list"></i>
                     SHORTURL MAP LIST
                 </h1>
             </div>
@@ -73,7 +143,7 @@
             <div class="column is-8">
                 <div class="container">
                     <table id="shorturl-list" class="table is-striped is-fullwidth">
-                        <thead>
+                        <thead class="only-read">
                             <tr>
                                 <th style="width: 5%; text-align: center;">No.</th>
                                 <th style="width: 15%; text-align: center;">SHORT URL</th>
@@ -92,7 +162,7 @@
                                         <a :href="item.srcUrl" class="has-text-grey-dark"
                                             target="_blank">{{ item.srcUrl }}</a>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center; user-select: none;">
                                         {{ formatDate(item.date) }}
                                     </td>
                                 </tr>
@@ -107,69 +177,7 @@
 
     </section>
 
-    <!-- 添加新短域名 -->
-    <section class="section">
 
-        <div class="container has-text-centered has-text-primary">
-            <div class="heading">
-                <h1 class="title">
-                    <!-- <span class="icon">
-                        <i class="fas fa-plus-circle"></i>
-                    </span> -->
-                    CREATE SHORTURL MAP
-                </h1>
-            </div>
-        </div>
-
-        <br>
-
-        <div id="shorturl-add" class="container">
-
-            <div class="columns">
-                <div class="column"></div>
-                <div class="column is-8">
-
-                    <div class="field has-addons">
-                        <p class="control">
-                            <a class="button is-static">
-                                &ensp;SOURCE URL&ensp;
-                            </a>
-                        </p>
-                        <div class="control  is-expanded">
-                            <input class="input" type="url" name="srcUrl" v-model="srcUrl">
-                        </div>
-                        <div class="control" @click="addShortUrl">
-                            <a class="button is-dark">
-                                CREATE
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="columns has-text-centered">
-                        <div class="column"></div>
-                        <div class="column is-8">
-                            <section class="hero">
-                                <div class="hero-body">
-                                    <div class="container">
-                                        <h1 class="title has-text-black is-3">
-                                            {{ res.shortUrl }}
-                                        </h1>
-                                        <h2 class="subtitle is-5 has-text-grey">
-                                            {{ formatDate(res.date) }}
-                                        </h2>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                        <div class="column"></div>
-                    </div>
-
-                </div>
-                <div class="column"></div>
-            </div>
-
-        </div>
-    </section>
 
     <!-- 页脚 -->
     <footer class="footer">
@@ -184,18 +192,18 @@
 
     <script>
 
-        const SHORTURL_LIST_API = "/api/list"
-        const SHORTURL_CREATE_API = "/api/create"
+        const SHORTURL_LIST_API = "api/list"
+        const SHORTURL_CREATE_API = "api/create"
         const JSON_HEADERS_CONFIG = {
             headers: { 'Content-Type': 'application/json' }
         }
 
-        let TEST_DATA = [{ "shortUrl": "1E5A23", "date": "2020-07-09T18:06:45.007903", "srcUrl": "https://snailclimb.gitee.io/javaguide/#/docs/java/Multithread/JavaConcurrencyBasicsCommonInterviewQuestionsSummary" }, { "shortUrl": "Axr1G", "srcUrl": "https://www.bilibili.com/video/BV1Vp4y1S7HA", "date": "2020-07-09T17:32:33.771126" }]
+        // let TEST_DATA = [{ "shortUrl": "1E5A23", "date": "2020-07-09T18:06:45.007903", "srcUrl": "https://snailclimb.gitee.io/javaguide/#/docs/java/Multithread/JavaConcurrencyBasicsCommonInterviewQuestionsSummary" }, { "shortUrl": "Axr1G", "srcUrl": "https://www.bilibili.com/video/BV1Vp4y1S7HA", "date": "2020-07-09T17:32:33.771126" }]
 
         var shortUrlListVm = new Vue({
             el: "#shorturl-list",
             data: {
-                contentList: TEST_DATA
+                contentList: []
             },
             methods: {
                 flushContentList: function () {
@@ -209,7 +217,10 @@
                         })
                 },
                 formatDate: function (date) {
-                    return new Date(date).toLocaleString()
+                    if (date instanceof Date) {
+                        return date.toLocaleString()
+                    }
+                    return date == null ? "" : new Date(date).toLocaleString()
                 }
             },
             mounted: function () {
@@ -217,31 +228,48 @@
             }
         })
 
+        function validateUrl(srcUrl){
+            return /^https?:\/\/.+/.test(srcUrl)
+        }
+
         let shortUrlCreateVm = new Vue({
             el: "#shorturl-add",
             data: {
-                srcUrl: null,
-                res: {}
+                srcUrl: "",
+                result: {
+                    "shortUrl": "",
+                    "date": null
+                }
             },
             methods: {
                 addShortUrl: function (vm) {
+                    
+                    if(!validateUrl(this.srcUrl)){
+                        this.result.shortUrl = `Hey🤨: the url ☝☝ entered is not valid.`
+                        this.result.date = new Date()
+                        return
+                    }else{
+                        this.result.shortUrl = ""
+                    }
+
                     let data = {
                         "srcUrl": this.srcUrl
                     }
                     axios.post(SHORTURL_CREATE_API, data, JSON_HEADERS_CONFIG)
                         .then(res => {
                             let vm = shortUrlCreateVm
-                            // console.log(res.data)
-
-                            vm.res = res.data
-                            vm.res.shortUrl = location.host + "/" + vm.res.shortUrl
+                            vm.result = res.data
+                            vm.result.shortUrl = location.host + "/" + vm.result.shortUrl
                             shortUrlListVm.flushContentList()
                         }).catch(err => {
                             console.log(err)
                         })
                 },
                 formatDate: function (date) {
-                    return date== null ? "" : new Date(date).toLocaleString()
+                    if(date instanceof Date){
+                        return date.toLocaleString()
+                    }
+                    return date == null ? "" : new Date(date).toLocaleString()
                 }
             }
         })

@@ -19,7 +19,7 @@
 - **`POST /api/create {'srcUrl': 'source url'}`** | 返回提交原网址的 短网址
 
 ```json
-{"shortUrl": "xxx.xx/5Fdx6l", "date": "2020-4-28 16:22", "state": "success|fail"}
+{"shortUrl": "5Fdx6l", "date": "2020-4-28 16:22", "state": "success|fail"}
 ```
 
 - **`GET /api/list`** | 返回已创建的所有短网址

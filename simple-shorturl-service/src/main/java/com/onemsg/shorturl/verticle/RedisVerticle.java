@@ -35,6 +35,7 @@ public class RedisVerticle extends AbstractVerticle {
     public static final String SHORTURL_GET_ADDRESS = "redis.shorturl.get";
     public static final String SHORTURL_LIST_ADDRESS = "redis.shorturl.list";
     private static final String REDIS_CONNECTION_STRING = "redis://localhost:6379/1";
+    private static final String SRC_URL = "srcUrl";
 
     @Override
     public void start() throws Exception {
@@ -43,25 +44,23 @@ public class RedisVerticle extends AbstractVerticle {
             if (onCreate.succeeded()) {
                 logger.info("Redis 连接成功！");
                 redis = RedisAPI.api(client);
-            }else if(onCreate.failed()) {
+            } else if (onCreate.failed()) {
                 logger.error("Redis 连接失败！");
             }
         });
 
-        createCURDService();
+        initRepository();
 
     }
 
     private void createRedisClient(Handler<AsyncResult<RedisConnection>> handler) {
-                                    
+
+        AtomicInteger retry = new AtomicInteger(1);
         Redis.createClient(vertx, REDIS_CONNECTION_STRING).connect(onConnect -> {
             if (onConnect.succeeded()) {
                 client = onConnect.result();
                 // make sure the client is reconnected on error
-                client.exceptionHandler(e -> {
-                    // attempt to reconnect
-                    attemptReconnect(0);
-                });
+                client.exceptionHandler(e ->  attemptReconnect(retry.getAndIncrement()));
             }
             // allow further processing
             handler.handle(onConnect);
@@ -86,89 +85,82 @@ public class RedisVerticle extends AbstractVerticle {
         }
     }
 
-    private void createCURDService() {
+    private void initRepository() {
 
         EventBus bus = vertx.eventBus();
-    
-        MessageConsumer<JsonObject> consumner =  bus.consumer(SHORTURL_CREATE_ADDRESS);
-        consumner.handler( msg -> {
+
+        MessageConsumer<JsonObject> consumner = bus.consumer(SHORTURL_CREATE_ADDRESS);
+        consumner.handler(msg -> {
             JsonObject json = msg.body();
 
-            String srcUrl = json.getString("srcUrl");
-            String shortUrl = Convertor.to62String( srcUrl );
+            String srcUrl = json.getString(SRC_URL);
+            String shortUrl = Convertor.to62String(srcUrl);
 
             LocalDateTime date = LocalDateTime.now();
 
-            redis.hmset( List.of(shortUrl, "srcUrl", srcUrl, "date", date.toString() ), res -> {
-                if( res.succeeded() ){
+            redis.hmset(List.of(shortUrl, SRC_URL, srcUrl, "date", date.toString()), res -> {
+                if (res.succeeded()) {
                     String result = res.result().toString();
-                    if(result.equals("OK")){
+                    if (result.equals("OK")) {
                         logger.info("短网址创建完成 " + srcUrl + " -> " + shortUrl);
-                        msg.reply( new JsonObject()
-                            .put("shortUrl", shortUrl)
-                            .put("srcUrl", srcUrl)
-                            .put("date", date.toString())
-                        );
-                    }else{
+                        msg.reply(new JsonObject().put("shortUrl", shortUrl).put(SRC_URL, srcUrl).put("date",
+                                date.toString()));
+                    } else {
                         logger.error("短网址创建失败 " + srcUrl + " -> " + shortUrl);
-                        msg.reply( new JsonObject());
+                        msg.reply(new JsonObject());
                     }
-                }else{
+                } else {
                     logger.error("短网址创建失败 " + srcUrl + " -> " + shortUrl);
                     msg.reply(new JsonObject());
                 }
             });
-        } );
+        });
 
         bus.<String>consumer(SHORTURL_GET_ADDRESS, msg -> {
 
             String shortUrl = msg.body();
-            redis.hget(shortUrl, "srcUrl", res -> {
+            redis.hget(shortUrl, SRC_URL, res -> {
                 if (res.succeeded()) {
-                    if(res.result().type() == ResponseType.ERROR){
-                        msg.reply( null);  
-                    }else{
+                    if (res.result().type() == ResponseType.ERROR) {
+                        msg.reply(null);
+                    } else {
                         String srcUrl = res.result().toString();
-                        msg.reply( srcUrl);          
+                        msg.reply(srcUrl);
                     }
-                }else {
+                } else {
                     msg.reply(null);
                 }
             });
         });
-        
+
         bus.<String>consumer(SHORTURL_LIST_ADDRESS, msg -> {
 
             JsonArray array = new JsonArray();
             redis.keys("*", res -> {
-                if(res.succeeded()){
+                if (res.succeeded() && res.result().type() == ResponseType.MULTI) {
 
-                    if(res.result().type() == ResponseType.MULTI){
-                        
-                        AtomicInteger hasGetCount = new AtomicInteger();
-                        final int size = res.result().size();
+                    AtomicInteger hasGetCount = new AtomicInteger();
+                    final int size = res.result().size();
 
-                        for(Response r : res.result()){
-                            
-                            redis.hgetall(r.toString(), res2 -> {
-                                Response data = res2.result();
-                                JsonObject json = new JsonObject();
-                                json.put("shortUrl", r.toString())
-                                    .put(data.get(0).toString(), data.get(1).toString())
+                    for (Response r : res.result()) {
+
+                        redis.hgetall(r.toString(), res2 -> {
+                            Response data = res2.result();
+                            JsonObject json = new JsonObject();
+                            json.put("shortUrl", r.toString()).put(data.get(0).toString(), data.get(1).toString())
                                     .put(data.get(2).toString(), data.get(3).toString());
-                            
-                                // logger.info(json.toString());
-                                array.add(json);
-                                
-                                if( hasGetCount.incrementAndGet() == size ){
-                                    msg.reply(array);
-                                    logger.info("list 请求 redis 已回复");
-                                }
-                            });
-                        }
+
+                            array.add(json);
+
+                            if (hasGetCount.incrementAndGet() == size) {
+                                msg.reply(array);
+                                logger.info("list 请求 redis 已回复");
+                            }
+                        });
                     }
+
                 }
-            } );
+            });
 
         });
     }

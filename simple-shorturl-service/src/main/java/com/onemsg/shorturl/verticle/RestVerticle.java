@@ -23,19 +23,17 @@ public class RestVerticle extends AbstractVerticle {
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
 
-        router.get("/management").handler(routingContext -> {
-            routingContext.reroute("/static/management.html");
-        });
-
-        router.get("/favicon.ico").handler(routingContext -> {
-            routingContext.reroute("/static/favicon.ico");
-        });
+        router.get("/management").handler(routingContext -> routingContext.reroute("/static/management.html"));
+        router.get("/favicon.ico").handler(routingContext -> routingContext.reroute("/static/favicon.ico"));
 
         router.get("/:shortUrlKey").handler(this::handleRedirect);
         router.get("/api/list").handler(this::handleListShortUrl);
         router.post("/api/create").handler(this::handleCreateShortUrl);
+
         router.get("/static/*").handler(StaticHandler.create());
- 
+
+        // 方便 nginx 方向代理而添加的域名
+        // Router mainRouter = Router.router(vertx).mountSubRouter("/s", router);
 
         vertx.createHttpServer().requestHandler(router).listen(8081, "localhost", result -> {
             if (result.succeeded()) {
@@ -88,6 +86,6 @@ public class RestVerticle extends AbstractVerticle {
     }
 
     private void sendError(int statusCode, HttpServerResponse response ){
-        response.setStatusCode(404).end();
+        response.setStatusCode(statusCode).end();
     }
 }
