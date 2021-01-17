@@ -1,18 +1,14 @@
 #
 # Visual Studio Code
 #
-.settings/
-.classpath
-.project
-.vscode
+**/.settings/
+**/.classpath
+**/.project
+**/.vscode
+**/.factorypath
+
 
 #
 # maven 
 #
-target
-
-#
-# simple-shorturl-service
-#
-# simple-shorturl-service/target
-# simple-shorturl-service/.vscode
+**/target
