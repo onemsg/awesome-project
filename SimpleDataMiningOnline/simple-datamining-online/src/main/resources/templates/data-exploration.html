@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>数据探索</title>
+	<link rel="stylesheet" type="text/css" href="main.css" />
+	<script src="commons.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+	<div id="navigation-bar">
+		<ul>
+			<li><a href="data-selection">数据选择</a></li>
+			<li><a href="data-exploration" style="background-color: #cc0000">数据探索</a></li>
+			<li><a href="model-evaluation-selection">模型与验证</a></li>
+			<li><a href="model-evaluation">性能度量</a></li>
+		</ul>
+	</div>
+
+	<div id="data-state">
+		<h3 v-if="chose" style='color: blue'>当前使用的数据集: {{ dataName }}</h3>
+		<h3 v-else style='color: red'>未选择数据集, 请先绑定数据集</h3>
+	</div>
+
+	<div id="data-exploration">
+		<h1>2. 数据探索</h1>
+		<!-- ------------  main content  ----------------- -->
+		<h3 id="data-name">数据集</h3>
+		<table id="table-1" border="1">
+			<thead>
+				<tr>
+					<th>数据集名称</th>
+					<th>特征数</th>
+					<th>样本数</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{{ name }}</td>
+					<td>{{ shape[0] }}</td>
+					<td>{{ shape[1] }}</td>
+				</tr>
+			</tbody>
+		</table>
+		<h3>数据集特征信息</h3>
+		<table id="table-2" border="1">
+			<thead>
+				<tr>
+					<th>特征</th>
+					<th>Type</th>
+					<th>Missing</th>
+					<th>Count</th>
+					<th>Mean</th>
+					<th>Std</th>
+					<th>Min</th>
+					<th>Max</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="one in description"  >
+					<td>{{ one.Name }}</td>
+					<td>{{ one.Type }}</td>
+					<td>{{ one.Missing }}</td>
+					<td>{{ one.Count }}</td>
+					<td>{{ one.Mean }}</td>
+					<td>{{ one.Std }}</td>
+					<td>{{ one.Min }}</td>
+					<td>{{ one.Max }}</td>
+				</tr>
+			</tbody>
+		</table>
+		<h3>数据集样本值</h3>
+		<table id="table-3" border="1">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th v-for="feat in features">{{ feat }}</th>				
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="(sample, index) in values">
+					<td>{{ index }}</td>
+					<td v-for="v in sample"> {{ v }} </td>	
+				</tr>
+			</tbody>
+		</table>
+		<!-- ------------  main content  ----------------- -->
+	</div>
+	
+	<script type="text/javascript">
+		var data_state_vue = new Vue({
+			el: '#data-state',
+			data: {
+				chose: false,
+				dataName: null,
+			},
+			mounted() {
+				axios.get("/api/chosedata")
+					.then( res => {
+						this.chose = res.data.chose;
+						this.dataName = res.data.dataName;
+					})
+					.catch( error => console.log(error));
+			}
+		})
+
+		var data_desc_vue = new Vue({
+			el: '#data-exploration',
+			data: {
+				name: "",
+				features: [],
+				shape: [],
+				values: [],
+				description: {}
+			},
+			mounted() {
+				let url = "/api/data/desc/" + getQueryString('name');
+				axios.get(url)
+					.then(res => {
+						this.name = res.data.name;
+						this.features = res.data.features;
+						this.shape = res.data.shape;
+						this.values = res.data.values;
+						this.description = res.data.description;
+					})
+					.catch(error => console.log(error));
+			}
+		})
+	</script>
+</body>
+
+</html>

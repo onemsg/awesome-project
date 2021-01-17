@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>数据选择</title>
+	<link rel="stylesheet" type="text/css" href="main.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+	<div id="navigation-bar">
+		<ul>
+			<li><a href="data-selection" style="background-color: #cc0000">数据选择</a></li>
+			<li><a href="data-exploration">数据探索</a></li>
+			<li><a href="model-evaluation-selection">模型与验证</a></li>
+			<li><a href="model-evaluation">性能度量</a></li>
+		</ul>
+	</div>
+
+	<div id="data-state">
+		<h3 v-if="chose" style='color: blue'>当前使用的数据集: {{ dataName }}</h3>
+		<h3 v-else style='color: red'>未选择数据集, 请先绑定数据集</h3>
+	</div>
+
+	<div id="data-selection">
+		<h1>1. 数据选择</h1>
+
+		<h3 style="color: #C0C0C0">选择上传自定义数据集</h3>
+		<form id='upload-file' action='DataSelectServlet' method="post" enctype="multipart/form-data">
+			<input type='file' name='upload-data' required /> <input type='submit' value='上传' />
+		</form>
+		
+		<h3 style="color: #C0C0C0">选择提供的数据集</h3>
+		<table border="1">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>数据集</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="dataset-list">
+					<tr v-for="(name,index) in dataNames">
+						<td>{{ index }}</td>
+						<td>{{ name }}</td>
+						<td><a :href="'data-exploration?name=' + name ">选择</a></td>
+					</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<script type="text/javascript">
+		var data_state_vue = new Vue({
+			el: '#data-state',
+			data: {
+				chose: false,
+				dataName: null,
+			},
+			mounted() {
+				axios.get("/api/chosedata")
+					.then( res => {
+						this.chose = res.data.chose;
+						this.dataName = res.data.dataName;
+					}).catch( error => console.log(error));
+			}
+		})
+
+		var data_list_vue = new Vue({
+			el: '#dataset-list',
+			data: {
+				dataNames: []
+			},
+			mounted() {
+				axios.get('/api/data/names')
+					.then( res => this.dataNames = res.data )
+					.catch( error => console.log(error));
+			}
+		})
+	</script>
+</body>
+</html>

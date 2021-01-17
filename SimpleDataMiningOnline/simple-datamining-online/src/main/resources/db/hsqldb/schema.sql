@@ -1,0 +1,7 @@
+DROP TABLE dataset IF EXISTS;
+
+CREATE TABLE dataset(
+    id INTEGER IDENTITY PRIMARY KEY,
+    name VARCHAR(40),
+    path VARCHAR(50),
+)

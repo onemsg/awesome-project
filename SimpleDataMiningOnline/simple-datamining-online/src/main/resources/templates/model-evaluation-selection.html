@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>模型与验证方法选择</title>
+	<link rel="stylesheet" type="text/css" href="main.css" />
+	<script src="commons.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+	<div id="navigation-bar">
+		<ul>
+			<ul>
+				<li><a href="data-selection">数据选择</a></li>
+				<li><a href="data-exploration">数据探索</a></li>
+				<li><a href="model-evaluation-selection" style="background-color: #cc0000">模型与验证</a></li>
+				<li><a href="model-evaluation">性能度量</a></li>
+			</ul>
+		</ul>
+	</div>
+
+	<div id="data-state">
+		<h3 v-if="chose" style='color: blue'>当前使用的数据集: {{ dataName }}</h3>
+		<h3 v-else style='color: red'>未选择数据集, 请先绑定数据集</h3>
+	</div>
+
+	<div id="model-Selection">
+		<h1>3. 模型选择</h1>
+		<table border="0">
+			<tr>
+				<th>
+					<select name="modelName" form="form-1">
+						<option value="LinearRegression">多元线性回归</option>
+						<option value="Logistic">洛吉斯蒂回归</option>
+						<option value="KNN" selected>K近邻</option>
+						<option value="NaiveBayes">朴素贝叶斯</option>
+						<option value="C45">C4.5</option>
+						<option value="RandomForest">随机森林</option>
+						<option value="SVM">支持向量机</option>
+					</select>
+				</th>
+			</tr>
+			<tr>
+				<th>模型参数<input type="text" name="options" form="form-1" /></th>
+			</tr>
+		</table>
+	</div>
+	<div id="evaluation-Selection">
+		<h1>4. 测试方法选择</h1>
+		<form action="model-evaluation" method="get" id="form-1">
+			<table border="0">
+				<tr>
+					<td align="left"><input type="radio" name="evalMethod" value="use-training-test" />
+						使用测试机验证</td>
+					<td align="left">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left"><input type="radio" name="evalMethod" value="cross-validation" checked />交叉验证
+					</td>
+					<td align="right">K-Folds<input type="number" name="kFlods" value=10 min=1 max=100 checked /></td>
+				</tr>
+				<tr>
+					<td align="left"><input type="radio" name="evalMethod" value="split-validation" />
+						分割数据集验证</td>
+					<td align="right">%<input type="number" name="splitRadio" value=75 min=1 max=99 checked /></td>
+				</tr>
+			</table>
+			<h3><input type="submit" value="确定" class="button" /></h3>
+		</form>
+	</div>
+
+	<script type="text/javascript">
+		var data_state_vue = new Vue({
+			el: '#data-state',
+			data: {
+				chose: false,
+				dataName: null,
+			},
+			mounted() {
+				axios.get("/api/chosedata")
+					.then(res => {
+						this.chose = res.data.chose;
+						this.dataName = res.data.dataName;
+					})
+					.catch(error => console.log(error));
+			}
+		})
+	</script>
+
+</body>
+</html>

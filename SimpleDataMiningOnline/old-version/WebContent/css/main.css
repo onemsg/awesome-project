@@ -1,0 +1,160 @@
+@charset "UTF-8";
+
+body {
+	background-color: #fdfcf8;
+}
+#navigation-bar {
+	margin-left:auto;
+	margin-right:auto;
+	width:632px;
+}
+#navigation-bar ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+#navigation-bar li {
+	float: left;
+}
+
+#navigation-bar a:link, #navigation-bar a:visited {
+	display: block;
+	width: 150px;
+	font-weight: bold;
+	font-size: 1.6em;
+	color: #FFFFFF;
+	background-color: #bebebe;
+	text-align: center;
+	padding: 4px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+#navigation-bar a:hover, #navigation-bar a:active {
+	background-color: #cc0000;
+}
+
+#data-info {
+	height: 30px;	
+}
+
+#data-info h3{
+	text-align: center;	
+}
+
+#data-selection{
+	text-align: center;	
+}
+
+#data-selection table{
+	margin-left:auto;
+	margin-right:auto;
+	width: 50%;
+    color: #000000;
+    background-color: #f5f5f5;
+    text-align: center;
+    border-collapse:collapse;
+}
+
+#data-selection table td a {
+	text-decoration: none;
+}
+
+#data-exploration {
+	text-align: center;
+}
+#data-exploration h3{
+	color: #C0C0C0;
+}
+#data-exploration #table-1 {
+	margin-left:auto;
+	margin-right:auto;
+	width: 25%;
+    color: #000000;
+    background-color: #f5f5f5;
+    text-align: center;
+    border-collapse:collapse;
+}
+
+#data-exploration #table-2 {
+	margin-left:auto;
+	margin-right:auto;
+	width: 60%;
+    color: #000000;
+    background-color: #f5f5f5;
+    text-align: center;
+    border-collapse:collapse;
+}
+
+#data-exploration #table-3 {
+	margin-left:auto;
+	margin-right:auto;
+	width: 100%;
+    color: #000000;
+    background-color: #f5f5f5;
+    text-align: center;
+    border-collapse:collapse;
+}
+
+#model-Selection {
+	text-align: center;
+}
+
+#model-Selection table{
+	margin-left:auto;
+	margin-right:auto;
+	width: 100px;
+}
+
+#evaluation-Selection {
+	text-align: center;
+}
+
+#evaluation-Selection table {
+	margin-left:auto;
+	margin-right:auto;
+	width: 500px;
+}
+
+#evaluation-Selection .button {
+	background-color: #555555;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    padding: 10px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+#evaluation-Selection .button:hover {
+    background-color: #cc0000; /* Green */
+    color: white;
+}
+
+#model-evaluation {
+	text-align: center;
+}
+
+#model-evaluation table{
+	margin-left:auto;
+	margin-right:auto;
+	width: 500px;
+}
+
+#model-evaluation h3{
+	color: #C0C0C0;
+}
+
+#model-evaluation textarea{
+	font-size: 17px;
+	font-weight: bold;
+	outline-style:none;
+	border-radius:10px;
+	resize: none;	
+}

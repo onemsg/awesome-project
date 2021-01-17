@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>模型评估</title>
+	<link rel="stylesheet" type="text/css" href="main.css" />
+	<script src="commons.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+	<div id="navigation-bar">
+		<ul>
+			<li><a href="data-selection">数据选择</a></li>
+			<li><a href="data-exploration">数据探索</a></li>
+			<li><a href="model-evaluation-selection">模型与验证</a></li>
+			<li><a href="model-evaluation" style="background-color: #cc0000">性能度量</a></li>
+		</ul>
+	</div>
+
+	<div id="data-state">
+		<h3 v-if="chose" style='color: blue'>当前使用的数据集: {{ dataName }}</h3>
+		<h3 v-else style='color: red'>未选择数据集, 请先绑定数据集</h3>
+	</div>
+
+	<div id="model-evaluation">
+		<h1>5. 性能度量</h1>
+
+		<div id="error"></div>
+
+		<table border="0">
+			<thead>
+				<tr>
+					<th>模型名称</th>
+					<th>模型参数</th>
+					<th>数据集</th>
+					<th>验证方法</th>
+					<th v-if='hasKFlods'>K-Folds</th>
+					<th v-if='hasSplitRadio'>%</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{{ modelName }}</td>
+					<td>{{ options }}</td>
+					<td>{{ dataName }}</td>
+					<td>{{ evalMethod }}</td>
+					<th v-if='hasKFlods'>{{ kFlods }}</th>
+					<th v-if='hasSplitRadio'>{{ splitRadio }}</th>
+				</tr>
+			</tbody>
+		</table>
+		<h3>性能度量信息</h3>
+		<textarea rows="25" cols="110">{{ obejectString }}</textarea>
+	</div>
+
+	<script type="text/javascript">
+		var data_state_vue = new Vue({
+			el: '#data-state',
+			data: {
+				chose: false,
+				dataName: null,
+			},
+			mounted() {
+				axios.get("/api/chosedata")
+					.then( res => {
+						this.chose = res.data.chose;
+						this.dataName = res.data.dataName;
+					})
+					.catch( error => console.log(error));
+			}
+		})
+
+		var data_desc_vue = new Vue({
+			el: '#model-evaluation',
+			data: {
+				modelName: "",
+				options: "",
+				dataName: "",
+				evalMethod: "",
+				kFlods: -1,
+				splitRadio: -1,
+				summary: {}
+			},
+			mounted() {
+				let url = "/api/model/evalinfo" + document.location.search;
+				axios.get(url)
+					.then(res => {
+						this.modelName = res.data.modelName;
+						this.options = res.data.options;
+						this.dataName = res.data.dataName;
+						this.evalMethod = res.data.evalMethod;
+						this.kFlods = res.data.kFlods;
+						this.splitRadio = res.data.splitRadio;
+						this.summary = res.data.summary;
+					})
+					.catch(error => console.log(error));
+			},
+			computed: {
+				summaryString: function (){
+					return this.summary.summary + this.summary.matrix + this.summary.classDetails;
+				},
+				obejectString: function () {
+					let str = "";
+					for(let k in this.summary){ str += this.summary[k]; }
+					return str;
+				},
+				hasKFlods: function () {
+					return (this.kFlods != null && this.kFlods != -1) ? true : false;
+				},
+				hasSplitRadio: function () {
+					return (this.splitRadio != null && this.splitRadio != -1) ? true : false;
+				}
+			}
+		})
+	</script>
+</body>
+</html>
