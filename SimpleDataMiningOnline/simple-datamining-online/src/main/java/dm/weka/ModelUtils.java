@@ -1,6 +1,6 @@
 package dm.weka;
 
-import dm.model.DataLocation;
+import dm.entity.DataLocation;
 import dm.model.ModelInfo;
 
 /**

@@ -4,7 +4,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,28 +18,31 @@ import dm.model.ModelInfo;
 @Controller
 public class IndexController {
 
-    @RequestMapping(path = { "/", "data-selection" })
-    public String DataSelection(){
-        return "data-selection";
+
+    @GetMapping(path = { "/", "data-selection" })
+    public String DataSelection() {
+        return "/data-selection.html";
     }
 
-    @RequestMapping(path = "/data-exploration")
-    public String DataExploration(@RequestParam(value = "name", required = false) String name, HttpServletResponse response) {
+    @GetMapping(path = "/data-exploration")
+    public String DataExploration(@RequestParam(value = "name", required = false) String name,
+            HttpServletResponse response) {
         if (name != null) {
             Cookie cookie = new Cookie("dataName", name);
             response.addCookie(cookie);
         }
-        return "data-exploration";
+        return "/data-exploration.html";
     }
+
 
     @GetMapping(value = "/model-evaluation-selection")
     public String ModelEvaluationSelection(){
-        return "model-evaluation-selection";
+        return "/model-evaluation-selection.html";
     }
 
     @RequestMapping(value = "/model-evaluation", method = {RequestMethod.GET,RequestMethod.POST})
     public String ModelEvaluation( ModelInfo modelInfo, HttpSession session){
         if( !modelInfo.isEmpty()) session.setAttribute("modelInfo", modelInfo);
-        return "model-evaluation";  
+        return "/model-evaluation.html";  
     }
 }

@@ -27,8 +27,9 @@
 		<h1>1. 数据选择</h1>
 
 		<h3 style="color: #C0C0C0">选择上传自定义数据集</h3>
-		<form id='upload-file' action='DataSelectServlet' method="post" enctype="multipart/form-data">
-			<input type='file' name='upload-data' required /> <input type='submit' value='上传' />
+		<form id='upload-file' action='/api/data' method="post" enctype="multipart/form-data">
+			<input type='file' name='dataset' required accept=".arff" placeholder="仅支持 .arff 文件格式" />
+			<button>上传</button>
 		</form>
 		
 		<h3 style="color: #C0C0C0">选择提供的数据集</h3>

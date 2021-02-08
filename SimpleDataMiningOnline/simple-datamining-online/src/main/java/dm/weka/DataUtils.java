@@ -1,16 +1,15 @@
 package dm.weka;
 
-import weka.core.converters.ConverterUtils.DataSource;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Random;
 
 import org.springframework.util.ResourceUtils;
 
+import dm.entity.DataLocation;
 import dm.model.DataDescription;
-import dm.model.DataLocation;
 import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
 
 /**
  * DataUtils

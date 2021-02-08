@@ -1,26 +1,17 @@
-package dm.model;
+package dm.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import org.springframework.data.annotation.Id;
 
 /**
  * 对应数据库中存储的数据集
  */
-@Entity
-@Table(name = "dataset")
 public class DataLocation {
 	
 	@Id
-	@Column(name = "id")
 	private Long id;		//数据库中的索引
-	@Column(name = "name")
-	@NotEmpty
+
 	private String name; 	//数据集名字
-	@Column(name = "path")
-	@NotEmpty
+
 	private String path;	//数据集文件路径
 	
 	public DataLocation() {

@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active:
+      - dev
+
+---
+
+spring:
+  config:
+    activate:
+       on-profile:
+        - dev
+  datasource:
+    url: jdbc:hsqldb:mem:testdb?readOnly=false
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    username: sa
+    password:
+    schema:
+      - classpath*:db/hsqldb/schema.sql
+    data:
+      - classpath*:db/hsqldb/data.sql
+    hikari:
+      read-only: false
