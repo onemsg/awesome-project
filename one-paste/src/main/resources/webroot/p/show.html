@@ -1,0 +1,120 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../static/styles/agate.css">
+  <script src="../static/highlight.pack.js"></script>
+  <link rel="stylesheet" href="../static/bulma.min.css">
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
+  <!-- 生产环境版本，优化了尺寸和速度 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+</head>
+
+<body>
+
+  <section class="hero has-background-success-light" id="show-paster">
+
+    <div class="hero-head">
+      <div class="container has-text-centered">
+        <h1 class="title is-size-1">ONE PASTE</h1>
+        <h2 class="is-size-5">
+          Paste from {{ poster }} at {{ new Date(postdate).toLocaleString() }}
+        </h2>
+      </div>
+    </div>
+
+    <div class="hero-body">
+      <div class="container is-size-6">
+        <p>This paste expires on {{ new Date(expiration).toLocaleDateString() }}.</p>
+      </div>
+
+      <div class="container">
+        <highlightjs :language='syntax' :code="content" />
+      </div>
+    </div>
+
+  </section>
+
+
+  <script>
+
+    const GET_PATH = "/api/paster/"
+
+    const testdata = {
+      "poster": "onemsg",
+      "syntax": "Java",
+      "expiration": 1604695586809,
+      "content": `
+package com.onemsg.onepaste;
+
+import com.onemsg.onepaste.verticle.HttpVerticle;
+
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Vertx;
+
+/**
+ * Launcher
+ */
+public class Launcher {
+
+    public static void main(String[] args) {
+        
+        Vertx vertx = Vertx.vertx();
+        
+        vertx.deployVerticle(HttpVerticle.class, new DeploymentOptions().setInstances(2));
+    }
+}
+            `.trim(),
+      "postdate": 1604675586809
+    }
+
+    Vue.use(hljs.vuePlugin);
+
+    var pasterVue = new Vue({
+      el: "#show-paster",
+      data: {
+        "poster": null,
+        "syntax": null,
+        "expiration": null,
+        "content": "",
+        "postdate": null
+      },
+      mounted() {
+        let id = window.location.pathname.split("/").reverse()[0]
+        let path = GET_PATH + id;
+
+        axios.get(path).then(res => {
+
+          const paster = res.data.data;
+          pasterVue.content = paster.content
+          pasterVue.poster = paster.poster
+          pasterVue.syntax = paster.syntax
+          pasterVue.expiration = paster.expiration
+          pasterVue.postdate = paster.postdate
+
+        }).catch(err => {
+
+          console.log(err)
+
+          // const paster = testdata
+          // pasterVue.poster = paster.poster
+          // pasterVue.syntax = paster.syntax
+          // pasterVue.expiration = paster.expiration
+          // pasterVue.content = paster.content.toString()
+          // pasterVue.postdate = paster.postdate
+
+          // console.log(paster)
+        })
+      }
+    })
+  </script>
+
+
+</body>
+
+</html>

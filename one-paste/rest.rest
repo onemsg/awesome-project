@@ -1,0 +1,12 @@
+POST http://localhost:8080/api/paster HTTP/1.1
+content-type: application/json
+
+{
+    "poster": "onemsg",
+    "syntax": "java",
+    "expiration": 1604665929719,
+    "postdate": 1604665829719
+}
+
+###
+GET http://localhost:8080/api/paster/5fa5749d1a10bd55335dccd3 HTTP/1.1

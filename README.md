@@ -28,3 +28,7 @@
 - ## [simple-info-sharing](simple-info-sharing)
 
     这是一个简单的信息共享平台，信息具体地指其实是 html、pdf 这些能直接被浏览器解析的文件，信息上传到平台后，其他人可以直接查看/浏览。[2020/07]
+
+- ## [one-paste](one-paste)
+
+    一个效仿 [Ubuntu pastebin](https://paste.ubuntu.com/) 的粘贴信息分享平台，开发基于 `vert.x`、`mongodb`、`hightlight.js`。[2020/11]

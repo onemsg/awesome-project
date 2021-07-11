@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index</title>
+  <link rel="stylesheet" href="static/bulma.min.css">
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
+  <!-- 生产环境版本，优化了尺寸和速度 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+
+  <section class="hero has-background-success-light is-fullheight">
+
+    <div class="hero-head">
+      <div class="container has-text-centered">
+        <h1 class="title is-size-1">ONE PASTE</h1>
+        <h2 class="is-size-5">
+          一个效仿 <a href="https://paste.ubuntu.com" target="_blank">Ubuntu Pastebin</a> 的粘贴信息分享平台，开发基于 vert.x、mongodb、hightlight.js
+        </h2>
+      </div>
+    </div>
+
+    <div class="hero-body">
+      <form class="container" id="post-paster">
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">提交者</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control" style="width: 20%">
+                <input class="input is-danger" type="text" v-model="poster" maxlength="30" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">语言</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <div class="select">
+                  <select v-model="syntax">
+                    <option value="properties">.properties</option>
+                    <option value="Apache">Apache</option>
+                    <option value="config">config</option>
+                    <option value="Bash">Bash</option>
+                    <option value="C">C</option>
+                    <option value="C#">C#</option>
+                    <option value="C++">C++</option>
+                    <option value="C-like">C-like</option>
+                    <option value="foundation">foundation</option>
+                    <option value="grammar">grammar</option>
+                    <option value="for">for</option>
+                    <option value="C/C++">C/C++</option>
+                    <option value="grammars">grammars</option>
+                    <option value="CSS">CSS</option>
+                    <option value="CoffeeScript">CoffeeScript</option>
+                    <option value="Diff">Diff</option>
+                    <option value="Go">Go</option>
+                    <option value="HTML,">HTML,</option>
+                    <option value="XML">XML</option>
+                    <option value="HTTP">HTTP</option>
+                    <option value="JSON">JSON</option>
+                    <option value="Java">Java</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="Kotlin">Kotlin</option>
+                    <option value="Less">Less</option>
+                    <option value="Lua">Lua</option>
+                    <option value="Makefile">Makefile</option>
+                    <option value="Markdown">Markdown</option>
+                    <option value="Nginx">Nginx</option>
+                    <option value="config">config</option>
+                    <option value="Objective-C">Objective-C</option>
+                    <option value="PHP">PHP</option>
+                    <option value="PHP">PHP</option>
+                    <option value="Template">Template</option>
+                    <option value="Perl">Perl</option>
+                    <option value="Plain">Plain</option>
+                    <option value="text">text</option>
+                    <option value="Python">Python</option>
+                    <option value="Python">Python</option>
+                    <option value="REPL">REPL</option>
+                    <option value="Ruby">Ruby</option>
+                    <option value="Rust">Rust</option>
+                    <option value="SCSS">SCSS</option>
+                    <option value="SQL">SQL</option>
+                    <option value="Shell">Shell</option>
+                    <option value="Session">Session</option>
+                    <option value="Swift">Swift</option>
+                    <option value="TOML,">TOML,</option>
+                    <option value="also">also</option>
+                    <option value="INI">INI</option>
+                    <option value="TypeScript">TypeScript</option>
+                    <option value="YAML">YAML</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">过期时间</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <div class="select">
+                  <select v-model="expiration">
+                    <option value="-1" selected>无</option>
+                    <option value="1">1天</option>
+                    <option value="7">1周</option>
+                    <option value="30">1月</option>
+                    <option value="365">1年</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">内容</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <textarea v-model="content" class="textarea" rows="13" required></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label">
+            <!-- Left empty for spacing -->
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <button class="button is-dark" @click="post">
+                  粘贴!
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+
+  <script>
+
+    const POST_PATH = "/api/paster"
+    const JUMP_PATH = "/p/"
+
+    function getPaster() {
+      return {
+        "poster": null,
+        "syntax": null,
+        "expiration": null,
+        "content": null,
+        "postdate": new Date().getTime()
+      }
+    }
+
+    function jump(id) {
+      const path = JUMP_PATH + id
+      window.location.pathname = path
+    }
+
+    new Vue({
+      el: "#post-paster",
+      data: {
+        "poster": null,
+        "syntax": "Java",
+        "expiration": -1,
+        "content": null,
+        "error": []
+      },
+      methods: {
+        post: function (event) {
+
+          let form = document.getElementById("post-paster")
+          if(!form.checkValidity()){
+            return
+          }else{
+            event.preventDefault()
+          }
+          
+          const paster = getPaster()
+          paster.poster = this.poster
+          paster.syntax = this.syntax
+          let expiration = this.expiration == -1 ? 365 : this.expiration
+          paster.expiration = paster.postdate + Number.parseInt(expiration) * 24 * 3600 * 1000;
+          paster.content = this.content;
+
+          axios.post(POST_PATH, paster)
+            .then(res => {
+              let id = res.data.data
+              jump(id)
+            })
+            .catch(err => {
+              console.log(err)
+              console.log(paster)
+            })
+        }
+      }
+    })
+
+  </script>
+
+</body>
+
+</html>
