@@ -1,0 +1,44 @@
+POST http://localhost:3001/api/sendMsg
+Authorization: Basic faeFaeGEerfteEFmO458
+Content-Type: application/json
+
+{
+    "Message": "【哔哩哔哩】大会员5周年“萌力冲刺”，4.6折买1年送3个月，限时2天> https://b23.tv/V5dMfh ，如已购买请忽略 退订回T",
+    "PhoneNumber": "18620210001"
+}
+
+###
+POST http://localhost:3001/api/sendMsg
+Authorization: Basic faeFaeGEerfteEFmO458
+Content-Type: application/json
+
+{
+    "Message": "【宜家俱乐部】焕新家装季，收纳有妙招！至10/25来四元桥宜家\n⭐帕克思衣柜每满4000送300元电子券\n⭐斯玛斯塔儿童衣柜每满1500送100元电子券\n 线上线下同享>  c8b.co/Vpz8xpA 回0退订",
+    "PhoneNumber": "18620210001"
+}
+
+###
+POST http://localhost:3000/api/verification-code/ask-for
+Content-Type: application/json
+
+{
+    "user": "18620210001",
+    "service": "SIGIN_IN"
+}
+
+### 
+POST http://localhost:3000/api/verification-code/validate
+Content-Type: application/json
+
+{
+    "user": "18620210001",
+    "service": "SIGIN_IN",
+    "code": 367203
+}
+
+###
+GET http://localhost:3000/api/blocking
+
+
+###
+GET https://baidu.com/

@@ -32,3 +32,7 @@
 - ## [one-paste](one-paste)
 
     一个效仿 [Ubuntu pastebin](https://paste.ubuntu.com/) 的粘贴信息分享平台，开发基于 `vert.x`、`mongodb`、`hightlight.js`。[2020/11]
+
+- ## [verification-code-app](verification-code-app)
+
+    验证码应用 Example。 [2021/10]
