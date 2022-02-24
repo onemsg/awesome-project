@@ -13,11 +13,11 @@
 
     一个简单的基于 Mahout库 的电影推荐系统，使用了 Redis 作为缓存，Vert.X 构建 web 服务以提供 RESTful 服务。[2019/12]
 
-- ## [simple-datamining-online](SimpleDataMiningOnline)
+- ## [simple-datamining-online](simple-datamining-online)
 
     用 Spring Boot + Vue 实现的一个简单的在线数据挖掘，可上传查看数据、选择模型、查看性能度量结果。[2020/04]
 
-- ## [covid-19-realtime-info-visualization](COVID-19-REALTIME-INFO-VISUALIZATION)
+- ## [covid-19-realtime-info-visualization](covid-19-realtime-info-visualization)
 
     一个展示 COVID-19 全球实时趋势的 web 应用，基于 Vue/Bulma/Echarts 和 Flask 构建。[2020/06]
 
