@@ -108,7 +108,7 @@
                                             {{ result.shortUrl }}
                                         </h1>
                                         <h2 class="subtitle is-5 has-text-grey only-read">
-                                            {{ formatDate(result.date) }}
+                                            {{ formatDate(result.created) }}
                                         </h2>
                                     </div>
                                 </div>
@@ -148,12 +148,12 @@
                                 <th style="width: 5%; text-align: center;">No.</th>
                                 <th style="width: 15%; text-align: center;">SHORT URL</th>
                                 <th style="width: 60%; text-align: center;">SOURCE URL</th>
-                                <th style="width: 20%; text-align: center;">DATE</th>
+                                <th style="width: 20%; text-align: center;">CREATED</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template v-for="(item,index) in contentList">
-                                <tr>
+                                <tr key="item.shortUrl">
                                     <td style="text-align: center;">{{ index + 1 }}</td>
                                     <th style="text-align: center;">
                                         {{ item.shortUrl }}
@@ -163,7 +163,7 @@
                                             target="_blank">{{ item.srcUrl }}</a>
                                     </td>
                                     <td style="text-align: center; user-select: none;">
-                                        {{ formatDate(item.date) }}
+                                        {{ formatDate(item.created) }}
                                     </td>
                                 </tr>
                             </template>
@@ -192,13 +192,10 @@
 
     <script>
 
-        const SHORTURL_LIST_API = "api/list"
-        const SHORTURL_CREATE_API = "api/create"
+        const SHORTURL_API = "/api/shorturls"
         const JSON_HEADERS_CONFIG = {
             headers: { 'Content-Type': 'application/json' }
         }
-
-        // let TEST_DATA = [{ "shortUrl": "1E5A23", "date": "2020-07-09T18:06:45.007903", "srcUrl": "https://snailclimb.gitee.io/javaguide/#/docs/java/Multithread/JavaConcurrencyBasicsCommonInterviewQuestionsSummary" }, { "shortUrl": "Axr1G", "srcUrl": "https://www.bilibili.com/video/BV1Vp4y1S7HA", "date": "2020-07-09T17:32:33.771126" }]
 
         var shortUrlListVm = new Vue({
             el: "#shorturl-list",
@@ -207,11 +204,10 @@
             },
             methods: {
                 flushContentList: function () {
-                    axios.get(SHORTURL_LIST_API)
+                    axios.get(SHORTURL_API)
                         .then(res => {
                             let vm = shortUrlListVm
                             vm.contentList = res.data
-                            // console.log(res.data)
                         }).catch(error => {
                             console.log(error)
                         })
@@ -255,11 +251,11 @@
                     let data = {
                         "srcUrl": this.srcUrl
                     }
-                    axios.post(SHORTURL_CREATE_API, data, JSON_HEADERS_CONFIG)
+                    axios.post(SHORTURL_API, data, JSON_HEADERS_CONFIG)
                         .then(res => {
                             let vm = shortUrlCreateVm
                             vm.result = res.data
-                            vm.result.shortUrl = location.host + "/" + vm.result.shortUrl
+                            vm.result.shortUrl = location.host + "/s/" + vm.result.shortUrl
                             shortUrlListVm.flushContentList()
                         }).catch(err => {
                             console.log(err)

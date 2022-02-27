@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+  <contextName>logback</contextName>
+
+  <property name="appname" value="simple-shorurl-server" />
+  <property name="LOG_PATH" value="log" />
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %d{yyyy-dd-MM HH:mm:ss} %-5level [%thread] %logger{10} - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_PATH}/${appname}.log</file>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>
+        %d{yyyy-dd-MM HH:mm:ss} %-5level [%thread] %logger{10} - %msg%n
+      </pattern>
+    </encoder>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_PATH}/${appname}-%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>15</maxHistory>
+      <totalSizeCap>5GB</totalSizeCap>
+    </rollingPolicy>
+    <append>true</append>
+  </appender>
+
+  <root level="info">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>

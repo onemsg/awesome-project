@@ -10,31 +10,51 @@
 
 ![管理中心-创建新短域名](screenshot/02.png)
 
-## Web 路由说明
+## Web
 
-- **`GET /:shortUrlKey`** | 通过短网址，重定向到原网址
+- **`GET /s/:shortUrlKey`** | 通过短网址，重定向到原网址
 
 - **`GET /management`** | 管理中心，查看所有短网址映射和创建新短网址
 
-- **`POST /api/create {'srcUrl': 'source url'}`** | 返回提交原网址的 短网址
+- **`POST /api/shorturls {'srcUrl': 'source url'}`** | 返回提交原网址的 短网址
 
-```json
-{"shortUrl": "5Fdx6l", "date": "2020-4-28 16:22", "state": "success|fail"}
-```
+    ```json
+    {
+       "shortUrl": "5Fdx6l",
+       "srcUrl": "xxx.com/xxx/xxx",
+       "created": "2020-4-28 16:22",
+    }
+    ```
 
-- **`GET /api/list`** | 返回已创建的所有短网址
+- **`GET /api/shorturls`** | 返回已创建的所有短网址
 
-```json
-[ {"shortUrl": "short url", "srcUrl": "source url", "date": "create date" } ]
-```
+    ```json
+        [ 
+            {
+                "shortUrl": "5Fdx6l",
+                "srcUrl": "xxx.com/xxx/xxx",
+                "created": "2020-4-28 16:22"
+            }
+        ]
+    ```
+
+- Rest Response ErrorModel
+
+    ```json
+        {
+            "status": 500,
+            "message": "xxx",
+            "detail": "xxx"
+        }
+    ```
 
 ## 类/文件简要说明
 
 - `shorturl.common.Convertor` 是一个工具类，主要用来把十进制整数转62进制，和把一个字符串转62进制。
 
-- `shorturl.verticle` 包中都是各个 `verticle`。 `RedisVerticle` 用来创建和管理 Redis 数据库，以及通过事件机制（异步）相应 Redis 的读写请求；`RestVerticle` 用来创建 web 服务，提供 RESTful API 管理接口和短域名的路由重定向，它会异步请求读写 Redis。
+- `shorturl` 包中都是各个 `verticle`。 `StoreVerticle` 用来创建和管理 Redis 数据库，以及通过事件机制（异步）相应 Redis 的读写请求；`WebVerticle` 用来创建 web 服务，提供 RESTful API 管理接口和短域名的路由重定向，它会异步请求读写 Redis。
 
-- `short.Server` 部署和运行 Vert.X 服务。
+- `shorturl.MainVerticle` 部署和运行 Vert.X 服务。
 
 - `webroot\management.html` 基于 Vue 和 Bulma 构建的前端管理界面，用来查看已创建的 shorturl 和 创建新 shorturl。
 
@@ -52,12 +72,12 @@
 
 ## 运行
 
-首先确保 Redis 数据库已启动，JDK version 11或以上
+首先确保 Redis 数据库已启动，JDK version 17或以上
 
-1. IDE 直接运行 `short.Server` 的 main 方法；
+1. `mvn exec:java `；
 
 2. 或生成 jar 包，运行 `java -jar short-url-**.jar`；
 
-3. 访问 `http://localhost:8081/management` 进入管理中心界面；
+3. 访问 `http://localhost:5000/management` 进入管理中心界面；
 
-4. 访问路径 `host/:short-url-key` 测试短域名服务
+4. 访问路径 `http://localhost:5000/s/:short-url-key` 测试短域名服务
