@@ -1,14 +1,14 @@
 from flask import Flask, jsonify, make_response
-# from .service.country_service import isValidCountry
+
 from service.country_service import isValidCountry
 
-def createApp():
+def create_app():
     app = Flask(__name__)
     app.config['JSON_AS_ASCII'] = False
     app.static_url_path = "/"
     return app
 
-app = createApp()
+app = create_app()
 
 # index.html 是在 static/文件夹里，这样直接当作静态文件返回它
 # 而不是当成视图，因为 Jinja2 会对他进行渲染（你知道我们不需要它)
@@ -23,19 +23,8 @@ def home():
 def country(country):
     return app.send_static_file('country.html')
 
-    # valid = isValidCountry(country)
-    # if valid:
-    #     print("country is {}".format(country))
-    #     return app.send_static_file('country.html')
-    # else:
-    #     print("无效的国家名称: {}".format(country))
-    #     return """
-    #         <h2><strong>{}</strong>不是一个有效的国家名, iso2 或 iso3.<h2>
-    #         """.format(country)
-
-
 @app.route('/api/valid/<string:country>', methods=['GET'])
-def validateCountry(country):
+def validate_country(country):
     valid = isValidCountry(country)
     return jsonify(country=country, valid=valid)
 
