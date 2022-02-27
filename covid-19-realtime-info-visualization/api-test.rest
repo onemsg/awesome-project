@@ -1,0 +1,33 @@
+### 全球新冠疫情数据接口测试 ###
+
+GET https://corona.lmao.ninja/v2/all
+
+###
+GET https://corona.lmao.ninja/v2/countries?yesterday=1
+
+###
+GET https://corona.lmao.ninja/v2/countries
+
+###
+
+GET https://corona.lmao.ninja/v2/countries?sort=cases
+
+###
+GET https://corona.lmao.ninja/v2/countries/china/
+
+
+###
+GET https://corona.lmao.ninja/v2/historical/all
+
+###
+GET https://corona.lmao.ninja/v2/historical/china?lastdays=10
+
+###
+GET https://corona.lmao.ninja/v2/historical/china
+
+###
+
+GET https://corona.lmao.ninja/v2/apple/countries/CN
+
+###
+GET http://localhost:5000/api/valid/usaa
