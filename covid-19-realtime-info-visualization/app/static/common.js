@@ -6,7 +6,7 @@ const GLOVA_HISTORICAL_URL = "https://corona.lmao.ninja/v2/historical/all"
 const COUNTRIES_URL = "https://corona.lmao.ninja/v2/countries"
 const COUNTRIES_SORT_BY_CASES_URL = "https://corona.lmao.ninja/v2/countries?sort=cases"
 const COUNTRIY_URL = "https://corona.lmao.ninja/v2/countries/" //:countryName
-const COUNTRIES_SORT_URL = "https://corona.lmao.ninja/v2/countries?sort="  //{parameter}
+const COUNTRIES_SORT_URL = "https://corona.lmao.ninja/v2/countries?sort="  // parameter
 const COUNTRIY_HISTORICAL_URL = "https://corona.lmao.ninja/v2/historical/"  //:country
 const COUNTRIY_PROVINCE_HISTORICAL_URL = "https://corona.lmao.ninja/v2/historical/" //:country/:province
 
@@ -31,8 +31,8 @@ function getBaseOption(title="", date=[], data=[]){
             },
             formatter: function (params) {
                 params = params[0];
-                var date = new Date(params.name);
-                return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value;
+                const d = new Date(params.name);
+                return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' : ' + params.value;
             },
         },
         xAxis: {
@@ -77,14 +77,10 @@ function getDailyData(data){
     let values = Object.values(data)
     let daily_data = {}
     for(let i=1; i<dates.length; i++){
-        value = values[i] - values[i-1]
-        daily_data[dates[i]] = value 
+        daily_data[dates[i]] = values[i] - values[i - 1] 
     }
     return daily_data
 }
-
-// daily_data = getDailyData(TEST_DATA.deaths)
-// console.log(daily_data)
 
 /**
  * 全球最近30天 感染人数 | 死亡人数 | 每日新增 | 每日死亡
@@ -206,26 +202,26 @@ function initCountryHisChart(url) {
 
 /** 全球 / 国家 各国家 / 州（省）详细信息 */
 function initDetailDataTable() {
-    let el = "#detail-data-table"
-    let detailDataTableVm = new Vue({
-        el: el,
-        data: {
-            detailData: [],
-            showProgress: true
+    let detailDataTableOptions = {
+        data() {
+            return {
+                detailData: [],
+                showProgress: true
+            }
         },
         methods: {
             sortData: function (event, param, ascending){
                 if(ascending){
-                    this.detailData.sort( (a,b) =>  { a[parm] - b[parm]} )
+                    this.detailData.sort((a, b) => (a[parm] - b[parm])  )
                 }else{
-                    this.detailData.sort((a, b) => { b[parm] - a[parm] })
+                    this.detailData.sort((a, b) => (b[parm] - a[parm]) )
                 }
             }
         },
         mounted: function () {
             axios.get(COUNTRIES_SORT_BY_CASES_URL)
                 .then( res => {
-                    let vm = detailDataTableVm
+                    let vm = this
                     vm.showProgress = false
                     vm.detailData = res.data
                 })
@@ -233,22 +229,24 @@ function initDetailDataTable() {
                     console.log(err)
                 })
         }
-    })
+    }
+
+    Vue.createApp(detailDataTableOptions).mount("#detail-data-table")
 }
 
 
 function initBaseInfo(url) {
-    let el = "#base-info"
-    let baseInfoVm = new Vue({
-        el: el,
-        data: {
-            baseData: {},
-            lastUpdate: ""
+    let baseInfoOptions = {
+        data() {
+            return {             
+                baseData: { },
+                lastUpdate: ""
+            }
         },
         mounted: function () {
             axios.get(url)
                 .then(res => {
-                    let vm = baseInfoVm
+                    let vm = this
                     vm.baseData = res.data
                     vm.lastUpdate = new Date(res.data.updated)
                 })
@@ -256,7 +254,8 @@ function initBaseInfo(url) {
                     console.log(err)
                 })
         }
-    })
+    }
+    Vue.createApp(baseInfoOptions).mount("#base-info")
 }
 
 

@@ -18,7 +18,8 @@
 
     <div v-show="show" id="valid-country" class="notification is-black" style="margin-bottom: 0em;">
         <button class="delete is-large" @click="show = false"></button>
-        <p class="subtitle is-size-4">Warning: <strong class="has-text-white">{{ info.country }}</strong> 不是一个有效的国家名, iso2 或 iso3.</p>
+        <p class="subtitle is-size-4">Warning: <strong class="has-text-white">{{ info.country }}</strong> 不是一个有效的国家名,
+            iso2 或 iso3.</p>
     </div>
 
     <div id="base-info">
@@ -29,7 +30,6 @@
                         COVID-19
                         <span class="has-text-link has-text-weight-bold">{{ baseData.country }}</span>
                         实时趋势
-                        <!-- <span class="has-text-info">{{ baseData.country? "|" + baseData.country:"" }}</span> -->
                     </h3>
                     <h6 id="last-updated" class="subtitle is-6">
                         Last updated: {{ lastUpdate }}
@@ -174,7 +174,7 @@
             <div class="content has-text-centered">
                 <p>
                     <strong>COVID-19全球实时趋势</strong> Writed by <strong><a
-                            href="mailto:kvimsg@live.com">onemsg.</a></strong>
+                           href="mailto:kvimsg@live.com">onemsg.</a></strong>
                     Build by <strong>Bulma Vue and Echarts.</strong>
                 </p>
             </div>
@@ -189,31 +189,34 @@
         title = document.getElementsByTagName("title")[0]
         title.text = country.toLowerCase() + " - COVID-19实时趋势"
 
-
         console.log("country is " + country)
         initBaseInfo(COUNTRIY_URL + country)
         initCountryHisChart(COUNTRIY_HISTORICAL_URL + country);
         initDetailDataTable()
 
-        let validVm = new Vue({
-            el: "#valid-country",
-            data: {
-                info: "",
-                show: false
+        const validOptions = {
+            data() {
+                return {
+                    info: "",
+                    show: false
+                }
             },
             mounted: function () {
                 axios.get("api/valid/" + country)
                     .then(res => {
-                        validVm.info = res.data
+                        this.info = res.data
                         console.log(res.data)
-                        validVm.show = !res.data.valid
+                        this.show = !res.data.valid
                         console.log("show is " + validVm.show)
                     })
                     .catch(err => {
                         console.log(err)
                     })
             }
-        })
+        }
+
+        Vue.createApp(validOptions).mount("#valid-country")
+
     </script>
 </body>
 
